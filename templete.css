@@ -1,0 +1,23 @@
+img{
+    margin: 3%;
+    width: 75%;
+}
+h4, h6{
+    text-decoration: underline;
+}
+.item{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+hr{
+    width: 70%;
+}
+.footer{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+}
+.footer div p{
+    text-decoration: underline;
+}
