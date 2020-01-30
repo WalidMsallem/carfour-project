@@ -6,10 +6,10 @@ const passport = require("passport");
 const moment = require ('moment')
 const {readAndWriteFile ,createPdf ,senEmail ,promisifyUpload} =require('./pdf.helper');
 
-const ceckOutAreaImagesImagesLabel = 'ceckOutAreaImagesImages'
+const checkoutAreaImagesLabel = 'checkoutAreaImages'
 const foodAreaImagesLabel = 'foodAreaImages'
+const nonFoodAreaImagesLabel = 'nonFoodAreaImages'
 const presenceOfCleaningSupervisorImagesLabel = 'presenceOfCleaningSupervisorImages'
-const presentOfFoodDutyManagerEveningTime3ImagesLabel = 'presentOfFoodDutyManagerEveningTime3Images'
 var options = { format: "A4" };
 
 
@@ -32,34 +32,37 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
     const date =  moment( new Date ()).format('LLL')
 
     // start api
-    var listceckOutAreaImagesLink = []
-    var listceckOutAreaImagesPath = []
+    var listOfCheckoutAreaImagesLink  = []
+    var listOfCeckOutAreaImagesPath = []
     
     var listfoodAreaImagesLink = []
     var listfoodAreaImagesPath = []
 
-    var listpresenceOfCleaningSupervisorImagesLink = []
-    var listpresenceOfCleaningSupervisorImagesPath = []
+    var listOfNonFoodAreaImagesLink = []
+    var listOfNonFoodAreaImagesPath = []
 
-    var listpresentOfFoodDutyManagerEveningTime3ImagesLink = []
-    var listpresentOfFoodDutyManagerEveningTime3ImagesPath = []
+    var listOfPresenceOfCleaningSupervisorImagesLink = []
+    var listOfPresenceOfCleaningSupervisorImagesPath = []
 
     try {
         // upload images
       const [fields, files] = await promisifyUpload(request);
- console.log('fields' ,fields )
-      var {ceckOutAreaImagesImages ,foodAreaImages , presenceOfCleaningSupervisorImages,presentOfFoodDutyManagerEveningTime3Images} = files;
+
+      var {checkoutAreaImages ,
+           foodAreaImages ,
+            nonFoodAreaImages,
+            presenceOfCleaningSupervisorImages} = files;
      
 
 
-      if (ceckOutAreaImagesImages) {
-        for (var i = 0; i < ceckOutAreaImagesImages.length; i++) {
-            var newPath = "./uploads/" + user.name +"__" + ceckOutAreaImagesImagesLabel + "_"+ i + "_";
-            var singleImg = ceckOutAreaImagesImages[i];
+      if (checkoutAreaImages) {
+        for (var i = 0; i < checkoutAreaImages.length; i++) {
+            var newPath = "./uploads/" + user.name +"__" + checkoutAreaImagesLabel + "_"+ i + "_";
+            var singleImg = checkoutAreaImages[i];
             newPath += singleImg.originalFilename;
             let [imageLink,imagePath] =  await readAndWriteFile(singleImg, newPath);
-            listceckOutAreaImagesLink.push(imageLink);
-            listceckOutAreaImagesPath.push(imagePath);
+            listOfCheckoutAreaImagesLink.push(imageLink);
+            listOfCeckOutAreaImagesPath.push(imagePath);
           }
       }
       if (foodAreaImages) {
@@ -72,36 +75,36 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
             listfoodAreaImagesPath.push(imagePath);
           }
       }
+      if (nonFoodAreaImages) {
+        for (var i = 0; i < nonFoodAreaImages.length; i++) {
+            var newPath = "./uploads/" + user.name + "__" + nonFoodAreaImagesLabel +"_"+ i + "_" ;
+            var singleImg = nonFoodAreaImages[i];
+            newPath += singleImg.originalFilename;
+            let [imageLink,imagePath] =  await readAndWriteFile(singleImg, newPath);
+            listOfNonFoodAreaImagesLink.push(imageLink);
+            listOfNonFoodAreaImagesPath.push(imagePath);
+          }
+      }
       if (presenceOfCleaningSupervisorImages) {
         for (var i = 0; i < presenceOfCleaningSupervisorImages.length; i++) {
-            var newPath = "./uploads/" + user.name + "__" + presenceOfCleaningSupervisorImagesLabel +"_"+ i + "_" ;
+            var newPath = "./uploads/" + user.name + "__" + presenceOfCleaningSupervisorImagesLabel + "_"+ i + "_";
             var singleImg = presenceOfCleaningSupervisorImages[i];
             newPath += singleImg.originalFilename;
             let [imageLink,imagePath] =  await readAndWriteFile(singleImg, newPath);
-            listpresenceOfCleaningSupervisorImagesLink.push(imageLink);
-            listpresenceOfCleaningSupervisorImagesPath.push(imagePath);
-          }
-      }
-      if (presentOfFoodDutyManagerEveningTime3Images) {
-        for (var i = 0; i < presentOfFoodDutyManagerEveningTime3Images.length; i++) {
-            var newPath = "./uploads/" + user.name + "__" + presentOfFoodDutyManagerEveningTime3ImagesLabel + "_"+ i + "_";
-            var singleImg = presentOfFoodDutyManagerEveningTime3Images[i];
-            newPath += singleImg.originalFilename;
-            let [imageLink,imagePath] =  await readAndWriteFile(singleImg, newPath);
-            listpresentOfFoodDutyManagerEveningTime3ImagesLink.push(imageLink);
-            listpresentOfFoodDutyManagerEveningTime3ImagesPath.push(imagePath);
+            listOfPresenceOfCleaningSupervisorImagesLink.push(imageLink);
+            listOfPresenceOfCleaningSupervisorImagesPath.push(imagePath);
           }
       }
 
-
+   console.log('list' ,listOfCheckoutAreaImagesLink )   
    // end of upload
   let html = templete({...fields ,
       date,
       fullName,
-       listceckOutAreaImagesLink ,
+       listOfCheckoutAreaImagesLink ,
        listfoodAreaImagesLink , 
-       listpresenceOfCleaningSupervisorImagesLink,
-       listpresentOfFoodDutyManagerEveningTime3ImagesLink
+       listOfNonFoodAreaImagesLink,
+       listOfPresenceOfCleaningSupervisorImagesLink
     })
 
    // end of  create ejs template
@@ -128,24 +131,23 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
   
     const info = await senEmail (mailOptions)
 
-    listceckOutAreaImagesPath.map(element=> {
+    listOfCeckOutAreaImagesPath.map(element=> {
        fs.unlinkSync(element)
     })
     listfoodAreaImagesPath.map(element=> {
         fs.unlinkSync(element)
      })
-     listpresenceOfCleaningSupervisorImagesPath.map(element=> {
+     listOfNonFoodAreaImagesPath.map(element=> {
         fs.unlinkSync(element)
      })
-     listpresentOfFoodDutyManagerEveningTime3ImagesPath.map(element=> {
+     listOfPresenceOfCleaningSupervisorImagesPath.map(element=> {
         fs.unlinkSync(element)
      })
-    response.json(`succes   ${info}  `);
+    response.json(`succes   ${info}`);
 
 
     } catch (err) {
-        response.json(`errror
-      ${err}`);
+        response.status(400).json(err);
     }
     // upload
 })

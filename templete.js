@@ -80,7 +80,7 @@ const templete = (data) => ejs.render(
                         </div>
                     </div>
                     <hr>
-                    <div >
+                    <div>
                         <div class="item">
                         <span >Name Of Food Semi Duty Manager: </span>
                         <span style ="margin-left: 150px;"  ><%=  data.nonFoodSemiDutyLunch %></span>
@@ -92,19 +92,16 @@ const templete = (data) => ejs.render(
                     </div>
                     <hr>
                     <div >
-                        <div class="item">
-                        <span >Cleaning Remarks At Noon </span>
-                        <span style ="margin-left: 150px;" ><%=  data.cleaningRemarksAtNoon %></span>
-                        </div>
+            
                         <div class="item">
                         <span >CeckOut Area: </span>
                         <span style ="margin-left: 150px;"  ><%=  data.checkoutArea %></span>
                         </div>
 
                       <div>
-                      <% for(var i=0; i < data.listceckOutAreaImagesLink.length; i++) { %>
+                      <% for(var i=0; i < data.listOfCheckoutAreaImagesLink.length; i++) { %>
                         <div>
-                          <img src =<%= data.listceckOutAreaImagesLink[i] %> />
+                          <img src =<%= data.listOfCheckoutAreaImagesLink[i] %> />
                         </div>
                      <% } %>
                       </div>
@@ -128,32 +125,34 @@ const templete = (data) => ejs.render(
                         <span style ="margin-left: 150px;"  ><%=  data.nonFoodArea %></span>
                         </div>
 
-                        <div class="item">
-                        <span >Presence Of Cleaning Supervisor </span>
-                        <span style ="margin-left: 150px;"  ><%=  data.presenceOfCleaningSupervisor %></span>
-                        </div>
-
                         <div>
-                        <% for(var i=0; i < data.listpresenceOfCleaningSupervisorImagesLink.length; i++) { %>
+                        <% for(var i=0; i < data.listOfNonFoodAreaImagesLink.length; i++) { %>
                           <div>
-                            <img src =<%= data.listpresenceOfCleaningSupervisorImagesLink[i] %> />
+                            <img src =<%= data.listOfNonFoodAreaImagesLink[i] %> />
                           </div>
                        <% } %>
                         </div>
 
+
+                        <div class="item">
+                        <span >Presence Of Cleaning Supervisor </span>
+                        <span style ="margin-left: 150px;"  ><%=  data.presenceOfCleaningSupervisor %></span>
+                        </div>
+                        <div>
+
+                        <% for(var i=0; i < data.listOfPresenceOfCleaningSupervisorImagesLink.length; i++) { %>
+                          <div>
+                            <img src =<%= data.listOfPresenceOfCleaningSupervisorImagesLink[i] %> />
+                          </div>
+                       <% } %>
+                        </div>
 
                         <div class="item">
                         <span >Nubmber of Cleaning staff  : </span>
                         <span style ="margin-left: 150px;"  ><%=  data.nubmberOfCleaningStaff %></span>
                         </div>
                         
-                        <div>
-                        <% for(var i=0; i < data.listpresentOfFoodDutyManagerEveningTime3ImagesLink.length; i++) { %>
-                          <div>
-                            <img src =<%= data.listpresentOfFoodDutyManagerEveningTime3ImagesLink[i] %> />
-                          </div>
-                       <% } %>
-                        </div>
+           
 
 
                     </div>

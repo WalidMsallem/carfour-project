@@ -11,7 +11,7 @@ import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import PrivateRoute from "./utils/privateRoute";
-import axios from "axios";
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 // Check for token
