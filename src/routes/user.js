@@ -25,7 +25,6 @@ console.log('data' ,req.body )
   if (!isValid) {
     return res.status(400).json(errors);
   }
-
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       errors.email = "Email already exist";

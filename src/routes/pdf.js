@@ -3,7 +3,9 @@ const router = express.Router();
 const fs = require("fs");
 const templete = require('../../templete.js');
 const passport = require("passport");
-const moment = require ('moment')
+const moment = require ('moment');
+const Draft = require("../models/draft");
+
 const {readAndWriteFile ,createPdf ,senEmail ,promisifyUpload} =require('./pdf.helper');
 
 const checkoutAreaImagesLabel = 'checkoutAreaImages'
@@ -143,9 +145,13 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
      listOfPresenceOfCleaningSupervisorImagesPath.map(element=> {
         fs.unlinkSync(element)
      })
-    response.json(`succes   ${info}`);
-
-
+    // response.json(`succes   ${info}`);
+    Draft.findOneAndUpdate(
+      { user: request.user.id },
+      { user: request.user.id},
+      { new: true }
+    ).then(draft => response.json(draft))
+    .catch(err => response.json({msg :'error delete'}))
     } catch (err) {
         response.status(400).json(err);
     }

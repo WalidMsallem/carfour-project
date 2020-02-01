@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MDBContainer,
   MDBRow,
@@ -7,15 +7,27 @@ import {
   MDBCard,
   MDBCardBody,
   MDBIcon,
-  MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter ,
+  MDBModal,
+  MDBModalBody,
+  MDBModalHeader,
+  MDBModalFooter
 } from "mdbreact";
 import { connect } from "react-redux";
-import { sendRapport } from "../actions/rapportAction";
+import { sendRapport, saveRapport, getRapport } from "../actions/rapportAction";
 import { logoutUser } from "../actions/authActions";
-import './mainScreen.css'
-const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
-    const [modal, setModal] = useState(false);
-    const [message, setMessage] = useState('');
+import "./mainScreen.css";
+const MainScreen = ({
+  logoutUser,
+  sendRapport,
+  saveRapportLoading,
+  getRapportLoading,
+  rapport,
+  sendLoading,
+  saveRapport,
+  getRapport
+}) => {
+  const [modal, setModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [foodDutyManagerLunch, setFoodDutyManagerLunch] = useState(null);
   const [foodDutyManagerEvening, setFoodDutyManagerEvening] = useState(null);
@@ -36,8 +48,30 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
   const [checkoutAreaImages, setCheckoutAreaImages] = useState(null);
   const [foodAreaImages, setFoodAreaImages] = useState(null);
   const [nonFoodAreaImages, setNonFoodAreaImages] = useState(null);
-  const [presenceOfCleaningSupervisorImages, setPresenceOfCleaningSupervisorImages] = useState(null);
-  
+  const [
+    presenceOfCleaningSupervisorImages,
+    setPresenceOfCleaningSupervisorImages
+  ] = useState(null);
+
+  useEffect(() => {
+    getRapport(setMessage, setModal);
+  }, []);
+  useEffect(() => {
+console.log('rappp ' , rapport)
+   rapport.foodDutyManagerLunch? setFoodDutyManagerLunch(rapport.foodDutyManagerLunch) :setFoodDutyManagerLunch(null)
+    rapport.foodDutyManagerEvening?  setFoodDutyManagerEvening(rapport.foodDutyManagerEvening) : setFoodDutyManagerEvening(null)
+    rapport.nonFoodDutyLunch?setNonFoodDutyLunch (rapport.nonFoodDutyLunch) :setNonFoodDutyLunch (null)
+   rapport.nonFoodDutyEvening? setNonFoodDutyEvening (rapport.nonFoodDutyEvening) :setNonFoodDutyEvening (null)
+   rapport.nonFoodSemiDutyLunch? setNonFoodSemiDutyLunch (rapport.nonFoodSemiDutyLunch) : setNonFoodSemiDutyLunch (null)
+   rapport.nonFoodSemiDutyLunch ?setNonFoodSemiDutyEvening (rapport.nonFoodSemiDutyLunch) :setNonFoodSemiDutyEvening (null)
+   rapport.checkoutArea? setCheckoutArea (rapport.checkoutArea) :setCheckoutArea (null)
+   rapport.foodArea? setFoodArea(rapport.foodArea) :setFoodArea(null) 
+   rapport.nonFoodArea ?setNonFoodArea(rapport.nonFoodArea) :setNonFoodArea(null)
+   rapport.presenceOfCleaningSupervisor ?setPresenceOfCleaningSupervisor(rapport.presenceOfCleaningSupervisor) :setPresenceOfCleaningSupervisor(null)
+   rapport.nubmberOfCleaningStaff ?setNubmberOfCleaningStaff (rapport.nubmberOfCleaningStaff) :setNubmberOfCleaningStaff (null)
+
+  }, [rapport ]);
+
   const fieldsFuntion = [
     setFoodDutyManagerLunch,
     setFoodDutyManagerEvening,
@@ -54,8 +88,9 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
     setFoodAreaImages,
     setNonFoodAreaImages,
     setPresenceOfCleaningSupervisorImages
-  ]
-  const fields = [foodDutyManagerLunch,
+  ];
+  const fields = [
+    foodDutyManagerLunch,
     foodDutyManagerEvening,
     nonFoodDutyLunch,
     nonFoodDutyEvening,
@@ -65,14 +100,15 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
     foodArea,
     nonFoodArea,
     presenceOfCleaningSupervisor,
-    nubmberOfCleaningStaff,
-]
+    nubmberOfCleaningStaff
+  ];
   const onSubmit = e => {
-    const isFildsAreEmpty =  fields.find(el => el === null) === null ? true : false 
+    const isFildsAreEmpty =
+      fields.find(el => el === null) === null ? true : false;
     if (isFildsAreEmpty) {
-        setMessage('All fields are required')
-        setModal(true)
-        return
+      setMessage("All fields are required");
+      setModal(true);
+      return;
     }
     e.preventDefault();
     const formData = new FormData();
@@ -104,37 +140,62 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
       }
     }
     if (presenceOfCleaningSupervisorImages) {
-        for (const key of Object.keys(presenceOfCleaningSupervisorImages)) {
-          formData.append("presenceOfCleaningSupervisorImages", presenceOfCleaningSupervisorImages[key]);
-        }
+      for (const key of Object.keys(presenceOfCleaningSupervisorImages)) {
+        formData.append(
+          "presenceOfCleaningSupervisorImages",
+          presenceOfCleaningSupervisorImages[key]
+        );
       }
-    sendRapport(formData ,resetAllFields,setMessage, setModal) ;
+    }
+    sendRapport(formData, resetAllFields, setMessage, setModal);
   };
   const toggleModal = () => {
-    setModal(!modal)
-    setMessage('')
-  }
+    setModal(!modal);
+    setMessage("");
+  };
   const resetAllFields = () => {
     fieldsFuntion.forEach(element => {
-        element(null)
+      element(null);
     });
-  }
+    setNubmberOfCleaningStaff(0);
+  };
+
+  const handleSave = () => {
+    let draftFields = {};
+    if (foodDutyManagerLunch)
+      draftFields.foodDutyManagerLunch = foodDutyManagerLunch;
+    if (foodDutyManagerEvening)
+      draftFields.foodDutyManagerEvening = foodDutyManagerEvening;
+    if (nonFoodDutyLunch) draftFields.nonFoodDutyLunch = nonFoodDutyLunch;
+    if (nonFoodDutyEvening) draftFields.nonFoodDutyEvening = nonFoodDutyEvening;
+    if (nonFoodSemiDutyLunch)
+      draftFields.nonFoodSemiDutyLunch = nonFoodSemiDutyLunch;
+    if (nonFoodSemiDutyEvening)
+      draftFields.nonFoodSemiDutyEvening = nonFoodSemiDutyEvening;
+    if (checkoutArea) draftFields.checkoutArea = checkoutArea;
+    if (foodArea) draftFields.foodArea = foodArea;
+    if (nonFoodArea) draftFields.nonFoodArea = nonFoodArea;
+    if (presenceOfCleaningSupervisor)
+      draftFields.presenceOfCleaningSupervisor = presenceOfCleaningSupervisor;
+    if (nubmberOfCleaningStaff)
+      draftFields.nubmberOfCleaningStaff = nubmberOfCleaningStaff;
+
+    saveRapport(draftFields, setMessage, setModal);
+  };
   return (
     <MDBContainer>
       <MDBRow>
-
-      <MDBContainer>
-      <MDBModal isOpen={modal} toggle={toggleModal}>
-        <MDBModalHeader toggle={toggleModal} >Hello</MDBModalHeader>
-        <MDBModalBody>
-           {message}
-        </MDBModalBody>
-        <MDBModalFooter>
-          <MDBBtn color="secondary" onClick={toggleModal}>Close</MDBBtn>
-        </MDBModalFooter>
-      </MDBModal>
-    </MDBContainer>
-
+        <MDBContainer>
+          <MDBModal isOpen={modal} toggle={toggleModal}>
+            <MDBModalHeader toggle={toggleModal}>Hello</MDBModalHeader>
+            <MDBModalBody>{message}</MDBModalBody>
+            <MDBModalFooter>
+              <MDBBtn color="secondary" onClick={toggleModal}>
+                Close
+              </MDBBtn>
+            </MDBModalFooter>
+          </MDBModal>
+        </MDBContainer>
 
         <MDBCol ms="12" className="mt-3 mt-b mb-3">
           <MDBCard>
@@ -164,7 +225,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline1"
                           name="foodDutyManagerLunch"
                           value="true"
-                          checked = {foodDutyManagerLunch !== null && foodDutyManagerLunch ? true : null  }
+                          checked={
+                            foodDutyManagerLunch !== null &&
+                            foodDutyManagerLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setFoodDutyManagerLunch(true)}
                         />
                         <label
@@ -181,7 +247,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline2"
                           name="foodDutyManagerLunch"
                           value="true"
-                          checked = {foodDutyManagerLunch !== null && !foodDutyManagerLunch ? true : null  }
+                          checked={
+                            foodDutyManagerLunch !== null &&
+                            !foodDutyManagerLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setFoodDutyManagerLunch(false)}
                         />
                         <label
@@ -211,6 +282,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline3"
                           name="foodDutyManagerEvening"
                           value="true"
+                          checked={
+                            foodDutyManagerEvening !== null &&
+                            foodDutyManagerEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setFoodDutyManagerEvening(true)}
                         />
                         <label
@@ -227,6 +304,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline4"
                           name="foodDutyManagerEvening"
                           value="false"
+                          checked={
+                            foodDutyManagerEvening !== null &&
+                            !foodDutyManagerEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setFoodDutyManagerEvening(false)}
                         />
                         <label
@@ -263,6 +346,11 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline5"
                           name="nonFoodDutyLunch"
                           value="true"
+                          checked={
+                            nonFoodDutyLunch !== null && nonFoodDutyLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodDutyLunch(true)}
                         />
                         <label
@@ -279,6 +367,11 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline6"
                           name="nonFoodDutyLunch"
                           value="false"
+                          checked={
+                            nonFoodDutyLunch !== null && !nonFoodDutyLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodDutyLunch(false)}
                         />
                         <label
@@ -308,6 +401,11 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline7"
                           name="nonFoodDutyEveningnonFoodDutyLunch"
                           value="true"
+                          checked={
+                            nonFoodDutyEvening !== null && nonFoodDutyEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodDutyEvening(true)}
                         />
                         <label
@@ -324,6 +422,11 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline8"
                           name="nonFoodDutyEveningnonFoodDutyLunch"
                           value="false"
+                          checked={
+                            nonFoodDutyEvening !== null && !nonFoodDutyEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodDutyEvening(false)}
                         />
                         <label
@@ -359,6 +462,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline9"
                           name="nonFoodSemiDutyLunch"
                           value="true"
+                          checked={
+                            nonFoodSemiDutyLunch !== null &&
+                            nonFoodSemiDutyLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodSemiDutyLunch(true)}
                         />
                         <label
@@ -375,6 +484,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline10"
                           name="nonFoodSemiDutyLunch"
                           value="false"
+                          checked={
+                            nonFoodSemiDutyLunch !== null &&
+                            !nonFoodSemiDutyLunch
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodSemiDutyLunch(false)}
                         />
                         <label
@@ -404,6 +519,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline21"
                           name="nonFoodSemiDutyEvening"
                           value="true"
+                          checked={
+                            nonFoodSemiDutyEvening !== null &&
+                            nonFoodSemiDutyEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodSemiDutyEvening(true)}
                         />
                         <label
@@ -420,6 +541,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline22"
                           name="nonFoodSemiDutyEvening"
                           value="false"
+                          checked={
+                            nonFoodSemiDutyEvening !== null &&
+                            !nonFoodSemiDutyEvening
+                              ? true
+                              : null
+                          }
                           onClick={() => setNonFoodSemiDutyEvening(false)}
                         />
                         <label
@@ -463,6 +590,9 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline13"
                           name="checkoutAreanonFoodSemiDutyEvening"
                           value="ture"
+                          checked={
+                            checkoutArea !== null && checkoutArea ? true : null
+                          }
                           onClick={() => setCheckoutArea(true)}
                         />
                         <label
@@ -479,6 +609,9 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline14"
                           name="checkoutAreanonFoodSemiDutyEvening"
                           value="no"
+                          checked={
+                            checkoutArea !== null && !checkoutArea ? true : null
+                          }
                           onClick={() => setCheckoutArea(false)}
                         />
                         <label
@@ -520,6 +653,7 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline16"
                           name="foodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="true"
+                          checked={foodArea !== null && foodArea ? true : null}
                           onClick={() => setFoodArea(true)}
                         />
                         <label
@@ -536,6 +670,7 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline17"
                           name="foodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="false"
+                          checked={foodArea !== null && !foodArea ? true : null}
                           onClick={() => setFoodArea(false)}
                         />
                         <label
@@ -577,6 +712,9 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline18"
                           name="nonFoodAreafoodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="true"
+                          checked={
+                            nonFoodArea !== null && nonFoodArea ? true : null
+                          }
                           onClick={() => setNonFoodArea(true)}
                         />
                         <label
@@ -593,6 +731,9 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline19"
                           name="nonFoodAreafoodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="false"
+                          checked={
+                            nonFoodArea !== null && !nonFoodArea ? true : null
+                          }
                           onClick={() => setNonFoodArea(false)}
                         />
                         <label
@@ -636,6 +777,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline20"
                           name="presenceOfCleaningSupervisornonFoodAreafoodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="true"
+                          checked={
+                            presenceOfCleaningSupervisor !== null &&
+                            presenceOfCleaningSupervisor
+                              ? true
+                              : null
+                          }
                           onClick={() => setPresenceOfCleaningSupervisor(true)}
                         />
                         <label
@@ -652,6 +799,12 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                           id="defaultInline25"
                           name="presenceOfCleaningSupervisornonFoodAreafoodAreacheckoutAreanonFoodSemiDutyEvening"
                           value="false"
+                          checked={
+                            presenceOfCleaningSupervisor !== null &&
+                            !presenceOfCleaningSupervisor
+                              ? true
+                              : null
+                          }
                           onClick={() => setPresenceOfCleaningSupervisor(false)}
                         />
                         <label
@@ -663,14 +816,16 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                       </div>
                     </div>
                   </div>
-                           {/* upload  */}
-                           <div>
+                  {/* upload  */}
+                  <div>
                     <h3>Presence of Cleaning Supervisor Image Upload</h3>
                     <div className="form-group">
                       <input
                         type="file"
                         multiple
-                        onChange={e => setPresenceOfCleaningSupervisorImages(e.target.files)}
+                        onChange={e =>
+                          setPresenceOfCleaningSupervisorImages(e.target.files)
+                        }
                       />
                     </div>
                   </div>
@@ -694,6 +849,7 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
                         borderBottom: "solid blue",
                         background: "none"
                       }}
+                      value={nubmberOfCleaningStaff}
                       onChange={e => setNubmberOfCleaningStaff(e.target.value)}
                     />
                   </div>
@@ -701,15 +857,15 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
               </section>
 
               <div className="text-center py-4 mt-3 button-container">
-                <MDBBtn className="btn btn-outline-blue" type="submit">
+                <MDBBtn className="btn btn-outline-blue" onClick={handleSave}>
                   Save Data
                   <MDBIcon far icon="save" className="ml-2" />
                 </MDBBtn>
-                <MDBBtn className="btn btn-outline-blue" onClick={onSubmit} >
+                <MDBBtn className="btn btn-outline-blue" onClick={onSubmit}>
                   Send Mail
                   <MDBIcon far icon="paper-plane" className="ml-2" />
                 </MDBBtn>
-             { sendLoading && <div class="lds-dual-ring"></div>}
+                {sendLoading && <div class="lds-dual-ring"></div>}
               </div>
             </MDBCardBody>
           </MDBCard>
@@ -718,9 +874,17 @@ const MainScreen = ({ logoutUser, sendRapport,sendLoading }) => {
     </MDBContainer>
   );
 };
-const mapStateToProps = (state)=> {
+const mapStateToProps = state => {
   return {
-      sendLoading : state.rapport.laoding
-  }
-}
-export default connect(mapStateToProps, { sendRapport, logoutUser })(MainScreen);
+    sendLoading: state.rapport.sendLoading,
+    saveRapportLoading: state.rapport.saveRapportLoading,
+    getRapportLoading: state.rapport.getRapportLoading,
+    rapport: state.rapport.rapport
+  };
+};
+export default connect(mapStateToProps, {
+  sendRapport,
+  logoutUser,
+  saveRapport,
+  getRapport
+})(MainScreen);
