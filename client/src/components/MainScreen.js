@@ -22,7 +22,7 @@ const MainScreen = ({
   saveRapportLoading,
   getRapportLoading,
   rapport,
-  sendLoading,
+  sendRapportLoading,
   saveRapport,
   getRapport
 }) => {
@@ -57,7 +57,7 @@ const MainScreen = ({
     getRapport(setMessage, setModal);
   }, []);
   useEffect(() => {
-console.log('rappp ' , rapport)
+ if (rapport) {
    rapport.foodDutyManagerLunch? setFoodDutyManagerLunch(rapport.foodDutyManagerLunch) :setFoodDutyManagerLunch(null)
     rapport.foodDutyManagerEvening?  setFoodDutyManagerEvening(rapport.foodDutyManagerEvening) : setFoodDutyManagerEvening(null)
     rapport.nonFoodDutyLunch?setNonFoodDutyLunch (rapport.nonFoodDutyLunch) :setNonFoodDutyLunch (null)
@@ -69,7 +69,7 @@ console.log('rappp ' , rapport)
    rapport.nonFoodArea ?setNonFoodArea(rapport.nonFoodArea) :setNonFoodArea(null)
    rapport.presenceOfCleaningSupervisor ?setPresenceOfCleaningSupervisor(rapport.presenceOfCleaningSupervisor) :setPresenceOfCleaningSupervisor(null)
    rapport.nubmberOfCleaningStaff ?setNubmberOfCleaningStaff (rapport.nubmberOfCleaningStaff) :setNubmberOfCleaningStaff (null)
-
+ }
   }, [rapport ]);
 
   const fieldsFuntion = [
@@ -865,10 +865,7 @@ console.log('rappp ' , rapport)
                   Send Mail
                   <MDBIcon far icon="paper-plane" className="ml-2" />
                 </MDBBtn>
-                {console.log('send' ,sendLoading)}
-                {console.log('saveRapportLoading' ,saveRapportLoading)}
-                {console.log('getRapportLoading' ,getRapportLoading)}
-                {(sendLoading || saveRapportLoading || getRapportLoading) && <div class="lds-dual-ring"></div>}
+                {(sendRapportLoading || saveRapportLoading || getRapportLoading) && <div class="lds-dual-ring"></div>}
               </div>
             </MDBCardBody>
           </MDBCard>
@@ -879,7 +876,7 @@ console.log('rappp ' , rapport)
 };
 const mapStateToProps = state => {
   return {
-    sendLoading: state.rapport.sendLoading,
+    sendRapportLoading: state.rapport.sendRapportLoading,
     saveRapportLoading: state.rapport.saveRapportLoading,
     getRapportLoading: state.rapport.getRapportLoading,
     rapport: state.rapport.rapport

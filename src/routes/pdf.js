@@ -166,7 +166,7 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
       { $set: resetDraftFields },
       { new: true }
     ).then(draft => response.json(draft))
-    .catch(err => response.json({msg :'error delete'}))
+    // .catch(err => response.json({msg :'error delete'}))
     } catch (err) {
         response.status(400).json(err);
     }

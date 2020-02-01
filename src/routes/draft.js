@@ -68,6 +68,7 @@ router.get(
       const errors = {};
       Draft.findOne({ user: req.user._id })
         .then(draft => {
+          console.log('draft' , draft)
           if (!draft) {
             new Draft({ user: req.user._id }).save().then(draft => res.json(draft));
 
