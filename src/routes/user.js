@@ -20,7 +20,6 @@ const User = require("../models/user");
 
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
-console.log('data' ,req.body )
   // Check Validation
   if (!isValid) {
     return res.status(400).json(errors);

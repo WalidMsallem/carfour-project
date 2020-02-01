@@ -23,7 +23,6 @@ router.post(
       // Get fields
       const draftFields = {};
       draftFields.user = req.user.id;
-      console.log('req.body' , req.body)
 
       if (req.body.foodDutyManagerLunch) draftFields.foodDutyManagerLunch = req.body.foodDutyManagerLunch;
       if (req.body.foodDutyManagerEvening) draftFields.foodDutyManagerEvening = req.body.foodDutyManagerEvening;
@@ -41,7 +40,6 @@ router.post(
       // if (typeof req.body.skills !== "undefined") {
       //   draftFields.skills = req.body.skills.split(",");
       // }
-      console.log('dtaft' , draftFields)
       Draft.findOne({ user: req.user.id }).then(draft => {
         if (draft) {
           // Update
@@ -68,7 +66,6 @@ router.get(
       const errors = {};
       Draft.findOne({ user: req.user._id })
         .then(draft => {
-          console.log('draft' , draft)
           if (!draft) {
             new Draft({ user: req.user._id }).save().then(draft => res.json(draft));
 

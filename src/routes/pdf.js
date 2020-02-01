@@ -98,7 +98,6 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
           }
       }
 
-   console.log('list' ,listOfCheckoutAreaImagesLink )   
    // end of upload
   let html = templete({...fields ,
       date,
@@ -132,6 +131,7 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
   
   
     const info = await senEmail (mailOptions)
+    console.log(info)
 
     listOfCeckOutAreaImagesPath.map(element=> {
        fs.unlinkSync(element)

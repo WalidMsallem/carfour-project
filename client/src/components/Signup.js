@@ -33,8 +33,6 @@ const Signup = ({auth,registerUser ,history ,registerLoading}) => {
   }, [history, isAuthenticated])
 
 const handleChange = (e) => {
-  console.log('data', data)
-
  const {name , value} = e.target
  setData ((prevState) =>  ({
       ...prevState,
