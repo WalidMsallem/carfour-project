@@ -66,7 +66,6 @@ router.get(
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const errors = {};
-  console.log("walidddddddddddddd" , req.user)
       Draft.findOne({ user: req.user._id })
         .then(draft => {
           if (!draft) {

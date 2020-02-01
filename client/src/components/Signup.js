@@ -1,11 +1,14 @@
 import React , {useState ,useEffect} from "react";
 import { Link } from "react-router-dom";
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBCard, MDBCardBody } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBCard, MDBCardBody ,  MDBModal,
+  MDBModalBody,
+  MDBModalHeader,
+  MDBModalFooter } from 'mdbreact';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { registerUser } from "../actions/authActions";
 
-const Signup = ({auth,registerUser ,history}) => {
+const Signup = ({auth,registerUser ,history ,registerLoading}) => {
   const [data, setData] = useState({
     name :'',
     lastName : '',
@@ -13,8 +16,15 @@ const Signup = ({auth,registerUser ,history}) => {
     password : "",
     password2 : ""
   })
-   
+  const [modal, setModal] = useState(false);
+  const [message, setMessage] = useState("");
+
   const {isAuthenticated}  = auth
+
+  const toggleModal = () => {
+    setModal(!modal);
+    setMessage("");
+  };
 
   useEffect(() => {
     if ( isAuthenticated) {
@@ -35,11 +45,24 @@ const handleChange = (e) => {
 
 const onSubmit = (e) => {
   e.preventDefault();
-   registerUser(data,history);
+   registerUser(data,history ,setMessage, setModal);
 }
   return (
     <MDBContainer>
       <MDBRow>
+
+      <MDBContainer>
+                <MDBModal isOpen={modal} toggle={toggleModal}>
+                  <MDBModalHeader toggle={toggleModal}>Hello</MDBModalHeader>
+                  <MDBModalBody>{message && message.map(el=><div>{el}</div>)}</MDBModalBody>
+                  <MDBModalFooter>
+                    <MDBBtn color="secondary" onClick={toggleModal}>
+                      Close
+                    </MDBBtn>
+                  </MDBModalFooter>
+                </MDBModal>
+              </MDBContainer>
+
         <MDBCol ms="12" className="mt-3 mt-b">
           <MDBCard>
             <MDBCardBody>
@@ -101,10 +124,11 @@ const onSubmit = (e) => {
                 </div>
                 <br />
                 <p className="h6 text-center ">Already have an account ? <Link to="/login"><span className="blue-text">Login</span></Link></p>
-                <div className="text-center py-4 mt-3">
+                <div className="text-center py-4 mt-3 button-container">
                   <MDBBtn className="btn btn-outline-blue" onClick ={onSubmit}>
                     Register
                   </MDBBtn>
+                  { registerLoading && <div class="lds-dual-ring"></div>}
                 </div>
               </form>
             </MDBCardBody>
@@ -117,7 +141,8 @@ const onSubmit = (e) => {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  registerLoading: state.auth.registerLoading
+
 });
 export default connect(
   mapStateToProps,

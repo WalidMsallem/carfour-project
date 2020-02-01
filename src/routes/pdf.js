@@ -145,10 +145,25 @@ router.post('/send',passport.authenticate("jwt", { session: false }),
      listOfPresenceOfCleaningSupervisorImagesPath.map(element=> {
         fs.unlinkSync(element)
      })
-    // response.json(`succes   ${info}`);
-    Draft.findOneAndUpdate(
+    // response.json(`succes   ${info}`);*
+   const resetDraftFields = { }
+
+      resetDraftFields.foodDutyManagerLunch = null
+      resetDraftFields.foodDutyManagerEvening = null
+      resetDraftFields.nonFoodDutyLunch = null
+      resetDraftFields.nonFoodDutyEvening = null
+      resetDraftFields.nonFoodSemiDutyLunch = null
+      resetDraftFields.nonFoodSemiDutyEvening = null
+      resetDraftFields.checkoutArea = null
+      resetDraftFields.foodArea = null
+      resetDraftFields.nonFoodArea = null
+      resetDraftFields.presenceOfCleaningSupervisor = null
+      resetDraftFields.nubmberOfCleaningStaff = null 
+      resetDraftFields.user =  request.user.id  
+
+       Draft.findOneAndUpdate(
       { user: request.user.id },
-      { user: request.user.id},
+      { $set: resetDraftFields },
       { new: true }
     ).then(draft => response.json(draft))
     .catch(err => response.json({msg :'error delete'}))

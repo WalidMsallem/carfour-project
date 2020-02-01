@@ -865,7 +865,10 @@ console.log('rappp ' , rapport)
                   Send Mail
                   <MDBIcon far icon="paper-plane" className="ml-2" />
                 </MDBBtn>
-                {sendLoading && <div class="lds-dual-ring"></div>}
+                {console.log('send' ,sendLoading)}
+                {console.log('saveRapportLoading' ,saveRapportLoading)}
+                {console.log('getRapportLoading' ,getRapportLoading)}
+                {(sendLoading || saveRapportLoading || getRapportLoading) && <div class="lds-dual-ring"></div>}
               </div>
             </MDBCardBody>
           </MDBCard>

@@ -29,7 +29,8 @@ export default function(state = initialState, action) {
     case SEND_RAPPORT_SUCCESS:
       return {
         ...state,
-        sendRapportLoading: false
+        sendRapportLoading: false,
+           rapport : action.payload
       };
     case SEND_RAPPORT_FAILER:
       return {

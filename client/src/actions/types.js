@@ -16,5 +16,12 @@ export const GET_RAPPORT_SUCCESS = "GET_RAPPORT_SUCCESS";
 export const GET_RAPPORT_FAILER = "GET_RAPPORT_FAILER";
 
 
+export const LOGIN = "LOGIN";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAILER = "LOGIN_FAILER";
+
+export const REGISTER = "REGISTER";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAILER = "REGISTER_FAILER";
 
 
